@@ -27,6 +27,10 @@ function App() {
     setInputValue('')
   }
 
+  function deleteTodo(id: number) {
+    setTodos(todos.filter(todo => todo.id !== id))
+  }
+
   return (
     <div className="app">
       <h1>Todo List</h1>
@@ -45,7 +49,7 @@ function App() {
                 id="completed"
                 checked={todo.completed}
               />
-              <button>Delete🗑️</button>
+              <button onClick={() => deleteTodo(todo.id)}>Delete🗑️</button>
               <button>Update</button>
             </li>
           ))}
