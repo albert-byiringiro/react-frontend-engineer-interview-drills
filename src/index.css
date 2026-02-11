@@ -12,6 +12,13 @@ body {
   padding: 2rem;
 }
 
+.container {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  padding: 2rem;
+}
+
 .todo-list {
   padding: 2rem;
   margin-top: 5px;

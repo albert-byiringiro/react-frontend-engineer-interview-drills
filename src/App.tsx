@@ -41,27 +41,29 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Todo List</h1>
-      <div className="input-area">
-        <input type="text" value={inputValue} onChange={handleInputChange} />
-        <button onClick={addNewTodo}>Add Todo</button>
-      </div>
-      <div className="display-area">
-        <ul className="todo-list">
-          {todos.map(todo => (
-            <li key={todo.id} className="todo-list-item">
-              <input
-                type="checkbox"
-                name="completed"
-                id="completed"
-                checked={todo.completed}
-              />
-              <span id="todo-text">{todo.text}</span>
-              <button>Update</button>
-              <button onClick={() => deleteTodo(todo.id)}>Delete🗑️</button>
-            </li>
-          ))}
-        </ul>
+      <div className="container">
+        <h1 className="heading">Todo List</h1>
+        <div className="input-area">
+          <input type="text" value={inputValue} onChange={handleInputChange} />
+          <button onClick={addNewTodo}>Add Todo</button>
+        </div>
+        <div className="display-area">
+          <ul className="todo-list">
+            {todos.map(todo => (
+              <li key={todo.id} className="todo-list-item">
+                <input
+                  type="checkbox"
+                  name="completed"
+                  id="completed"
+                  checked={todo.completed}
+                />
+                <span id="todo-text">{todo.text}</span>
+                <button>Update</button>
+                <button onClick={() => deleteTodo(todo.id)}>Delete🗑️</button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )
