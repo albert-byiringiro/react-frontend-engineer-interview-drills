@@ -31,7 +31,7 @@ function App() {
 
     const newTodo: Todo = {
       id: nanoid(),
-      text: inputValue,
+      text: trimmed,
       completed: false,
     }
 
@@ -67,7 +67,7 @@ function App() {
 
     setTodos(prevTodos =>
       prevTodos.map(todo => {
-        return todo.id === id ? { ...todo, text: editingText } : todo
+        return todo.id === id ? { ...todo, text: trimmed } : todo
       })
     )
     setEditingId(null)
