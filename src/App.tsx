@@ -19,8 +19,10 @@ function App() {
   function addNewTodo() {
     if (!inputValue.trim()) return
 
+    let nextId = 0
+
     const newTodo: Todo = {
-      id: Date.now(),
+      id: ++nextId,
       text: inputValue,
       completed: false,
     }
@@ -48,6 +50,11 @@ function App() {
   }
 
   function saveEdit(id: number) {
+    if (!editingText.trim()) {
+      cancelEdit()
+      return
+    }
+
     setTodos(prevTodos =>
       prevTodos.map(todo => {
         return todo.id === id ? { ...todo, text: editingText } : todo
@@ -75,9 +82,9 @@ function App() {
                 <input
                   type="checkbox"
                   name="completed"
-                  id="completed"
+                  id={`todo-checkbox-${todo.id}`}
                   checked={todo.completed}
-                  onClick={() => toggleTodoComplete(todo.id)}
+                  onChange={() => toggleTodoComplete(todo.id)}
                   disabled={editingId ? true : false}
                 />
                 {editingId == todo.id ? (
@@ -93,7 +100,7 @@ function App() {
                 ) : (
                   <>
                     <span
-                      id="todo-text"
+                      id={`todo-text-${todo.id}`}
                       className={todo.completed ? 'completed' : ''}
                     >
                       {todo.text}
