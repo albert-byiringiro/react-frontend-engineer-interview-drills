@@ -1,20 +1,55 @@
 #!/bin/bash
 
-# Script to swap React practice drills into src/
+# Script to swap React practice drills into src/ or scaffold new drills from the template.
 
 DRILLS_DIR="."
 SRC_DIR="./src"
-AVAILABLE_DRILLS=("todo-list" "autocomplete" "autocomplete-api" "sortable-table" "pagination" "timer" "modal" "grid-toggle" "tabs" "accordion" "fetch-demo" "tic-tac-toe" "wordle")
+TEMPLATE_DIR="./_template"
+
+# Auto-detect available drills (every directory except src, _template, node_modules, and hidden dirs)
+mapfile -t AVAILABLE_DRILLS < <(find . -maxdepth 1 -mindepth 1 -type d \
+  ! -name 'src' ! -name '_template' ! -name 'node_modules' ! -name '.*' \
+  -printf '%f\n' | sort)
 
 # Function to show usage
 show_usage() {
-    echo "Usage: $0 <drill-name>"
+    echo "Usage:"
+    echo "  $0 <drill-name>        Swap an existing drill into src/"
+    echo "  $0 new <drill-name>    Create a new drill from the template"
     echo ""
     echo "Available drills:"
     for drill in "${AVAILABLE_DRILLS[@]}"; do
         echo "  - $drill"
     done
 }
+
+# ─── "new" subcommand: scaffold a drill from _template ────────────────
+if [ "$1" == "new" ]; then
+    if [ -z "$2" ]; then
+        echo "Error: Provide a name for the new drill."
+        echo "Usage: $0 new <drill-name>"
+        exit 1
+    fi
+    NEW_NAME="$2"
+    NEW_PATH="$DRILLS_DIR/$NEW_NAME"
+    if [ -d "$NEW_PATH" ]; then
+        echo "Error: Drill '$NEW_NAME' already exists."
+        exit 1
+    fi
+    if [ ! -d "$TEMPLATE_DIR" ]; then
+        echo "Error: Template directory '_template/' not found."
+        exit 1
+    fi
+    cp -r "$TEMPLATE_DIR" "$NEW_PATH"
+    # Replace placeholder title in App.tsx and README.md
+    sed -i "s/Drill Title/$NEW_NAME/" "$NEW_PATH/App.tsx"
+    sed -i "s/\[Drill Name\]/$NEW_NAME/" "$NEW_PATH/README.md"
+    echo "✓ Created new drill: $NEW_NAME/"
+    echo "  1. Edit $NEW_NAME/README.md — fill in requirements and data."
+    echo "  2. Run: ./swap-drill.sh $NEW_NAME"
+    echo "  3. Run: npm run dev"
+    exit 0
+fi
 
 # Check if drill name is provided
 if [ -z "$1" ]; then

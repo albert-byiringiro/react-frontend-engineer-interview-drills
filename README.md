@@ -85,7 +85,7 @@ These are less frequently asked but valuable for depth and breadth:
 
 ## How to use
 
-### Quick start
+### Quick start — existing drill
 
 ```bash
 npm install
@@ -93,15 +93,27 @@ npm install
 npm run dev
 ```
 
-The script copies `main.tsx`, `App.tsx`, and `index.css` (if present) from the drill folder into `src/`, replacing what was there. Your drill folders stay untouched.
+### Quick start — new drill from template
+
+```bash
+./swap-drill.sh new star-rating   # scaffolds star-rating/ from _template/
+# Edit star-rating/README.md — fill in requirements and data
+./swap-drill.sh star-rating
+npm run dev
+```
+
+The `_template/` folder contains a starter `App.tsx`, `main.tsx`, `index.css`, and a comprehensive `README.md` with the full interview playbook: how to clarify the spec, plan your state, phase your implementation, and hit every senior-level signal interviewers look for. Copy it for every new drill.
+
+The swap script copies `main.tsx`, `App.tsx`, and `index.css` (if present) from the drill folder into `src/`, replacing what was there. Your drill folders stay untouched.
 
 ### Recommended workflow
 
 1. **Set a timer** — 30 min for P0 drills, 45 min for P1+.
 2. **Branch per drill** — `git checkout -b drill/pagination` before swapping.
-3. **Build from scratch** — don't peek at solutions until the timer runs out.
-4. **Review & iterate** — after each attempt, note what tripped you up. Repeat the drill on a later day until you can nail it cold.
-5. **Commit your progress** — `git add . && git commit` before swapping to the next drill.
+3. **Read the drill README first** — clarify requirements in your head before writing code, just like in a real interview.
+4. **Build from scratch** — don't peek at solutions until the timer runs out.
+5. **Review & iterate** — after each attempt, note what tripped you up. Repeat the drill on a later day until you can nail it cold.
+6. **Commit your progress** — `git add . && git commit` before swapping to the next drill.
 
 ### Keep your work safe
 
