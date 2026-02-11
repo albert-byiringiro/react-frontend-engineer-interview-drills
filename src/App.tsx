@@ -9,6 +9,8 @@ interface Todo {
 function App() {
   const [inputValue, setInputValue] = useState('')
   const [todos, setTodos] = useState<Todo[]>([])
+  const [editingId, setEditingId] = useState<number | null>(Number)
+  const [editingText, setEditingText] = useState('')
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value)
@@ -35,6 +37,25 @@ function App() {
     )
   }
 
+  function startEditing(todo: Todo) {
+    setEditingId(todo.id)
+    setEditingText(todo.text)
+  }
+
+  function cancelEdit() {
+    setEditingId(null)
+    setEditingText('')
+  }
+
+  function saveEdit(id: number) {
+    setTodos(prevTodos =>
+      prevTodos.map(todo => {
+        return todo.id === id ? { ...todo, text: editingText } : todo
+      })
+    )
+    setEditingId(null)
+  }
+
   function deleteTodo(id: number) {
     setTodos(todos.filter(todo => todo.id !== id))
   }
@@ -57,10 +78,32 @@ function App() {
                   id="completed"
                   checked={todo.completed}
                   onClick={() => toggleTodoComplete(todo.id)}
+                  disabled={editingId ? true : false}
                 />
-                <span id="todo-text" className={todo.completed ? "completed" : ""}>{todo.text}</span>
-                <button>Update</button>
-                <button onClick={() => deleteTodo(todo.id)}>Delete🗑️</button>
+                {editingId == todo.id ? (
+                  <>
+                    <input
+                      type="text"
+                      value={editingText}
+                      onChange={e => setEditingText(e.target.value)}
+                    />
+                    <button onClick={() => saveEdit(todo.id)}>Save Edit</button>
+                    <button onClick={() => cancelEdit()}>Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <span
+                      id="todo-text"
+                      className={todo.completed ? 'completed' : ''}
+                    >
+                      {todo.text}
+                    </span>
+                    <button onClick={() => startEditing(todo)}>Update</button>
+                    <button onClick={() => deleteTodo(todo.id)}>
+                      Delete🗑️
+                    </button>
+                  </>
+                )}
               </li>
             ))}
           </ul>
