@@ -5,6 +5,21 @@
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   padding: 2rem;
+}
+
+.todo-list {
+  padding: 2rem;
+  margin-top: 5px;
+  border-radius: 10px;
+}
+
+.todo-list-item {
+  list-style: none;
+  display: flex;
+  gap: 10px;
 }

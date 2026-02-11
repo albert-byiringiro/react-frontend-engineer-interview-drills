@@ -27,6 +27,14 @@ function App() {
     setInputValue('')
   }
 
+  function toggleTodoComplete(id: number) {
+    setTodos(prevTodos =>
+      prevTodos.map(todo => {
+        return todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      })
+    )
+  }
+
   function deleteTodo(id: number) {
     setTodos(todos.filter(todo => todo.id !== id))
   }
@@ -41,16 +49,16 @@ function App() {
       <div className="display-area">
         <ul className="todo-list">
           {todos.map(todo => (
-            <li key={todo.id}>
-              <span>{todo.text}</span>
+            <li key={todo.id} className="todo-list-item">
               <input
                 type="checkbox"
                 name="completed"
                 id="completed"
                 checked={todo.completed}
               />
-              <button onClick={() => deleteTodo(todo.id)}>Delete🗑️</button>
+              <span id="todo-text">{todo.text}</span>
               <button>Update</button>
+              <button onClick={() => deleteTodo(todo.id)}>Delete🗑️</button>
             </li>
           ))}
         </ul>
