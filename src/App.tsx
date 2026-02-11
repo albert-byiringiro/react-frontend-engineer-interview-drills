@@ -9,7 +9,7 @@ interface Todo {
 function App() {
   const [inputValue, setInputValue] = useState('')
   const [todos, setTodos] = useState<Todo[]>([])
-  const [editingId, setEditingId] = useState<number | null>(Number)
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [editingText, setEditingText] = useState('')
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -57,7 +57,7 @@ function App() {
   }
 
   function deleteTodo(id: number) {
-    setTodos(todos.filter(todo => todo.id !== id))
+    setTodos(prevTodos => prevTodos.filter(todo => todo.id === id))
   }
 
   return (
