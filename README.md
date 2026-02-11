@@ -1,23 +1,135 @@
-# Drill Swap Helper
+# Common React Frontend Interview Drills
 
-This repo keeps each practice drill in its own folder while the `src/` directory is the place your dev server actually reads from. When you want to switch exercises, the included Bash helper copies the drill’s files into `src/` for you.
+Timed, hands-on practice for the **UI/machine-coding round** of frontend interviews at FAANG-level companies. Each drill lives in its own folder; a swap script hot-loads any drill into the Vite dev server so you can focus on building, not on boilerplate.
 
-## Quick start with `swap-drill.sh`
+---
 
-1. Run `npm install`
-2. Choose a drill from the available list: `todo-list`, `autocomplete`, `autocomplete-api`, `sortable-table`, `pagination`, `timer`, `modal`, `grid-toggle`, `tabs`, `accordion`, `fetch-demo`, `tic-tac-toe`, `wordle`.
-3. Run `./swap-drill.sh <drill-name>` from the repo root; e.g. `./swap-drill.sh pagination`.
-4. The script copies `main.tsx`, `App.tsx`, and `index.css` (if present) from that drill folder into `src/`, replacing what was there.
-5. Run `npm run dev` (or your preferred Vite command) to start the dev server with the newly swapped drill.
+## Why this repo
 
-## Keep your work safe
+The machine-coding round is the make-or-break stage of most frontend loops. Interviewers hand you a component spec and 30–45 minutes on the clock. What they evaluate:
 
-- Treat each drill swap as a checkpoint: commit your current progress or create a dedicated branch before running the script again so you can return to it later.
-- After swapping, double-check `git status` / your branch name to ensure you’re not overwriting uncommitted changes.
-- If you prefer, create one branch per drill (e.g., `drill-pagination`) or make a small commit after finishing each drill before swapping again.
+- **Correctness** — does it work?
+- **Component design** — sensible props/state split, reusable abstractions.
+- **Edge cases** — empty states, rapid clicks, race conditions, error handling.
+- **Accessibility** — keyboard navigation, ARIA roles, focus management.
+- **CSS competency** — layout, responsiveness, no visual jank.
 
-## Notes
+This repo gives you a repeatable environment to drill those skills under realistic time pressure.
 
-- The script only touches `src/`, so your drill folders stay untouched; you can always inspect the drill setup directly.
-- If a drill lacks `index.css`, the script simply skips it and leaves the existing stylesheet in place.
-# Common-React-FE-Interview-Drills
+---
+
+## Drill inventory
+
+### Current drills (in repo)
+
+| Priority | Drill | What it tests |
+|----------|-------|---------------|
+| **P0 — Must-know** | `todo-list` | CRUD, list rendering, controlled inputs, local state |
+| **P0 — Must-know** | `autocomplete` | Debounce, controlled inputs, keyboard nav, filtering |
+| **P0 — Must-know** | `autocomplete-api` | Async data fetching, race conditions, loading/error states |
+| **P0 — Must-know** | `tabs` | Conditional rendering, active-state management, a11y roles |
+| **P0 — Must-know** | `modal` | Portals, focus trapping, overlay click, Escape key handling |
+| **P0 — Must-know** | `sortable-table` | Data transformation, sort-direction toggling, table semantics |
+| **P0 — Must-know** | `pagination` | Derived state, page math, boundary conditions |
+| **P0 — Must-know** | `accordion` | Show/hide, multi-panel state, aria-expanded |
+| **P0 — Must-know** | `tic-tac-toe` | Game state machine, win detection, reset logic |
+| **P1 — Important** | `timer` | `setInterval`/`useEffect` cleanup, time formatting |
+| **P1 — Important** | `fetch-demo` | `useEffect` data fetching, loading/error/success states |
+| **P1 — Important** | `grid-toggle` | Grid layout, cell-state toggling, CSS Grid |
+| **P1 — Important** | `wordle` | Complex game logic, keyboard handling, feedback states |
+
+### Must-add drills (high interview frequency)
+
+These show up constantly in FAANG screens. Add these next:
+
+| Drill | What it tests | Source |
+|-------|---------------|--------|
+| **Star Rating** | Hover preview, click-to-set, half-star support, controlled/uncontrolled | GFE, Meta |
+| **Image Carousel** | Prev/next, auto-play, infinite loop, smooth transitions | GFE, Google |
+| **Progress Bar** | Animated fill, percentage label, sequential/concurrent variants | GFE, Meta |
+| **Traffic Light** | State machine, timed transitions, configurable durations | GFE, multiple |
+| **Transfer List** | Dual-list selection, bulk move, checkbox state management | GFE, Google |
+| **Stopwatch** | Start/stop/reset, lap tracking, precise timing with `useRef` | GFE, multiple |
+| **File Explorer** | Recursive tree rendering, expand/collapse, lazy loading | GFE, Google |
+| **Data Table (full)** | Sort + filter + paginate, column-level controls, large datasets | GFE, Meta |
+| **Nested Checkboxes** | Parent-child selection, indeterminate state, tree traversal | GFE, multiple |
+| **Undoable Counter** | Undo/redo stack, command pattern, history management | GFE |
+| **Connect Four** | 2D board state, gravity, diagonal win check | GFE |
+| **Memory Game** | Card-flip logic, match detection, preventing triple-flip | GFE, Amazon |
+
+### Additional drills to consider later
+
+These are less frequently asked but valuable for depth and breadth:
+
+| Drill | Category | Notes |
+|-------|----------|-------|
+| Kanban Board | App | Drag-and-drop, column management, persistence |
+| Signup Form | Form | Multi-field validation, async submission, error display |
+| Mortgage Calculator | Widget | Derived calculations, input formatting, edge cases |
+| Flight Booker | Widget | Date constraints, conditional fields, form logic |
+| Temperature Converter | Widget | Two-way binding, real-time conversion |
+| Contact Form | Form | Controlled inputs, validation, submission feedback |
+| Pixel Art | App | Canvas/grid drawing, color picker, undo |
+| Analog Clock | Widget | CSS transforms, `requestAnimationFrame`, math |
+| Birth Year Histogram | Data viz | Fetch + chart rendering, responsive SVG |
+| Selectable Grid Cells | Interaction | Mouse drag selection, Shift+click range, state tracking |
+| Auth Code Input | Form | Multi-input focus management, paste handling |
+| Snake Game | Game | Game loop, collision detection, growing state |
+| Tetris | Game | Piece rotation, row clearing, drop timing |
+| Whack-a-Mole | Game | Random spawn, click timing, score tracking |
+| Dice Roller | Widget | Randomization, animation, multiple dice |
+| Grid Lights | Widget | Activation order, reverse deactivation queue |
+| Holy Grail Layout | CSS | Classic CSS layout exercise |
+
+---
+
+## How to use
+
+### Quick start
+
+```bash
+npm install
+./swap-drill.sh <drill-name>   # e.g. ./swap-drill.sh pagination
+npm run dev
+```
+
+The script copies `main.tsx`, `App.tsx`, and `index.css` (if present) from the drill folder into `src/`, replacing what was there. Your drill folders stay untouched.
+
+### Recommended workflow
+
+1. **Set a timer** — 30 min for P0 drills, 45 min for P1+.
+2. **Branch per drill** — `git checkout -b drill/pagination` before swapping.
+3. **Build from scratch** — don't peek at solutions until the timer runs out.
+4. **Review & iterate** — after each attempt, note what tripped you up. Repeat the drill on a later day until you can nail it cold.
+5. **Commit your progress** — `git add . && git commit` before swapping to the next drill.
+
+### Keep your work safe
+
+- Always commit or branch before running `swap-drill.sh` again.
+- Check `git status` after swapping to confirm you haven't lost uncommitted changes.
+- If a drill lacks `index.css`, the script skips it and leaves the existing stylesheet.
+
+---
+
+## What interviewers actually look for
+
+Beyond "does it work," here's the rubric most FAANG interviewers use:
+
+| Signal | Junior | Senior |
+|--------|--------|--------|
+| **State design** | Works but messy | Minimal, normalized, derived where possible |
+| **Component boundaries** | One big component | Logical decomposition, clear data flow |
+| **Edge cases** | Happy path only | Empty, error, loading, rapid interaction |
+| **Accessibility** | None | Keyboard nav, ARIA, focus management |
+| **CSS** | Inline or fragile | Responsive, clean, no layout hacks |
+| **Communication** | Silent coding | Talks through tradeoffs, asks clarifying Qs |
+
+---
+
+## Resources
+
+- [GreatFrontEnd — UI Coding Questions](https://www.greatfrontend.com/questions/formats/ui-coding) — 200+ practice problems with solutions by ex-FAANG engineers
+- [GreatFrontEnd — Coding Interview Playbook](https://www.greatfrontend.com/front-end-interview-playbook/coding) — Strategy and patterns
+- [Front End Interview Handbook](https://www.frontendinterviewhandbook.com/) — Open-source guide by Yangshun (ex-Meta)
+- [Front End Interview Handbook — UI Questions](https://www.frontendinterviewhandbook.com/coding/build-front-end-user-interfaces) — Categorized component list
+- [Frontend Machine Coding Questions (GitHub)](https://github.com/NarendraKoya999/Frontend-Machine-Coding-Interview-Questions) — Community-maintained list
