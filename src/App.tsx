@@ -1,7 +1,8 @@
+import { nanoid } from 'nanoid'
 import React, { useState } from 'react'
 
 interface Todo {
-  id: number
+  id: string
   text: string
   completed: boolean
 }
@@ -9,7 +10,7 @@ interface Todo {
 function App() {
   const [inputValue, setInputValue] = useState('')
   const [todos, setTodos] = useState<Todo[]>([])
-  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [editingText, setEditingText] = useState('')
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -23,13 +24,13 @@ function App() {
     return
   }
 
-  let nextId = 0
-
   function addNewTodo() {
-    if (!inputValue.trim()) return
+    const trimmed = inputValue.trim()
+
+    if (!trimmed) return
 
     const newTodo: Todo = {
-      id: ++nextId,
+      id: nanoid(),
       text: inputValue,
       completed: false,
     }
@@ -38,7 +39,7 @@ function App() {
     setInputValue('')
   }
 
-  function toggleTodoComplete(id: number) {
+  function toggleTodoComplete(id: string) {
     setTodos(prevTodos =>
       prevTodos.map(todo => {
         return todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -56,8 +57,10 @@ function App() {
     setEditingText('')
   }
 
-  function saveEdit(id: number) {
-    if (!editingText.trim()) {
+  function saveEdit(id: string) {
+    const trimmed = editingText.trim()
+
+    if (!trimmed) {
       cancelEdit()
       return
     }
@@ -70,7 +73,7 @@ function App() {
     setEditingId(null)
   }
 
-  function deleteTodo(id: number) {
+  function deleteTodo(id: string) {
     setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id))
   }
 
@@ -117,11 +120,11 @@ interface TodoItemProps {
   todo: Todo
   isEditing: boolean
   editingText: string
-  onToggle: (id: number) => void
+  onToggle: (id: string) => void
   onStartEdit: (todo: Todo) => void
-  onSaveEdit: (id: number) => void
+  onSaveEdit: (id: string) => void
   onCancelEdit: () => void
-  onDelete: (id: number) => void
+  onDelete: (id: string) => void
   onEditTextChange: (text: string) => void
   isAnyEditing: boolean
 }
