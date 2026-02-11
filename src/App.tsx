@@ -23,10 +23,10 @@ function App() {
     return
   }
 
+  let nextId = 0
+
   function addNewTodo() {
     if (!inputValue.trim()) return
-
-    let nextId = 0
 
     const newTodo: Todo = {
       id: ++nextId,
@@ -34,7 +34,7 @@ function App() {
       completed: false,
     }
 
-    setTodos([...todos, newTodo])
+    setTodos(prevTodos => [...prevTodos, newTodo])
     setInputValue('')
   }
 
@@ -71,7 +71,7 @@ function App() {
   }
 
   function deleteTodo(id: number) {
-    setTodos(prevTodos => prevTodos.filter(todo => todo.id === id))
+    setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id))
   }
 
   return (
@@ -147,7 +147,7 @@ function TodoItem({
   }
 
   return (
-    <li key={todo.id} className="todo-list-item">
+    <li className="todo-list-item">
       <input
         type="checkbox"
         name="completed"
@@ -164,9 +164,15 @@ function TodoItem({
             value={editingText}
             onChange={e => onEditTextChange(e.target.value)}
             onKeyDown={handleKeyDown}
+            aria-label="Edit todo text"
+            autoFocus
           />
-          <button onClick={() => onSaveEdit(todo.id)}>Save Edit</button>
-          <button onClick={() => onCancelEdit()}>Cancel</button>
+          <button onClick={() => onSaveEdit(todo.id)} aria-label="Save changes">
+            Save Edit
+          </button>
+          <button onClick={() => onCancelEdit()} aria-label="Cancel editing">
+            Cancel
+          </button>
         </>
       ) : (
         <>
