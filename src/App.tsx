@@ -18,7 +18,7 @@ function App() {
     if (!inputValue.trim()) return
 
     const newTodo: Todo = {
-      id: todos.length + 1,
+      id: Date.now(),
       text: inputValue,
       completed: false,
     }
@@ -45,6 +45,8 @@ function App() {
                 id="completed"
                 checked={todo.completed}
               />
+              <button>Delete🗑️</button>
+              <button>Update</button>
             </li>
           ))}
         </ul>
