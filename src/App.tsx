@@ -16,6 +16,13 @@ function App() {
     setInputValue(e.target.value)
   }
 
+  function handleKeydown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') {
+      addNewTodo()
+    }
+    return
+  }
+
   function addNewTodo() {
     if (!inputValue.trim()) return
 
@@ -72,51 +79,112 @@ function App() {
       <div className="container">
         <h1 className="heading">Todo List</h1>
         <div className="input-area">
-          <input type="text" value={inputValue} onChange={handleInputChange} />
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeydown}
+            placeholder="What needs to be done?"
+            aria-label="New todo"
+          />
           <button onClick={addNewTodo}>Add Todo</button>
         </div>
         <div className="display-area">
           <ul className="todo-list">
             {todos.map(todo => (
-              <li key={todo.id} className="todo-list-item">
-                <input
-                  type="checkbox"
-                  name="completed"
-                  id={`todo-checkbox-${todo.id}`}
-                  checked={todo.completed}
-                  onChange={() => toggleTodoComplete(todo.id)}
-                  disabled={editingId ? true : false}
-                />
-                {editingId == todo.id ? (
-                  <>
-                    <input
-                      type="text"
-                      value={editingText}
-                      onChange={e => setEditingText(e.target.value)}
-                    />
-                    <button onClick={() => saveEdit(todo.id)}>Save Edit</button>
-                    <button onClick={() => cancelEdit()}>Cancel</button>
-                  </>
-                ) : (
-                  <>
-                    <span
-                      id={`todo-text-${todo.id}`}
-                      className={todo.completed ? 'completed' : ''}
-                    >
-                      {todo.text}
-                    </span>
-                    <button onClick={() => startEditing(todo)}>Update</button>
-                    <button onClick={() => deleteTodo(todo.id)}>
-                      Delete🗑️
-                    </button>
-                  </>
-                )}
-              </li>
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                isEditing={editingId === todo.id}
+                editingText={editingText}
+                onToggle={toggleTodoComplete}
+                onStartEdit={startEditing}
+                onSaveEdit={saveEdit}
+                onCancelEdit={cancelEdit}
+                onDelete={deleteTodo}
+                onEditTextChange={setEditingText}
+                isAnyEditing={editingId !== null}
+              />
             ))}
           </ul>
         </div>
       </div>
     </div>
+  )
+}
+
+interface TodoItemProps {
+  todo: Todo
+  isEditing: boolean
+  editingText: string
+  onToggle: (id: number) => void
+  onStartEdit: (todo: Todo) => void
+  onSaveEdit: (id: number) => void
+  onCancelEdit: () => void
+  onDelete: (id: number) => void
+  onEditTextChange: (text: string) => void
+  isAnyEditing: boolean
+}
+
+function TodoItem({
+  todo,
+  isEditing,
+  editingText,
+  onToggle,
+  onStartEdit,
+  onSaveEdit,
+  onCancelEdit,
+  onDelete,
+  onEditTextChange,
+  isAnyEditing,
+}: TodoItemProps) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSaveEdit(todo.id)
+    } else if (e.key === 'Escape') {
+      onCancelEdit()
+    }
+  }
+
+  return (
+    <li key={todo.id} className="todo-list-item">
+      <input
+        type="checkbox"
+        name="completed"
+        id={`todo-checkbox-${todo.id}`}
+        checked={todo.completed}
+        onChange={() => onToggle(todo.id)}
+        disabled={isAnyEditing}
+        aria-label={`Mark "${todo.text}" as ${todo.completed ? 'incomplete' : 'complete'}`}
+      />
+      {isEditing ? (
+        <>
+          <input
+            type="text"
+            value={editingText}
+            onChange={e => onEditTextChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button onClick={() => onSaveEdit(todo.id)}>Save Edit</button>
+          <button onClick={() => onCancelEdit()}>Cancel</button>
+        </>
+      ) : (
+        <>
+          <span
+            id={`todo-text-${todo.id}`}
+            className={todo.completed ? 'completed' : ''}
+          >
+            {todo.text}
+          </span>
+          <button onClick={() => onStartEdit(todo)} disabled={isAnyEditing}>
+            Update
+          </button>
+          <button onClick={() => onDelete(todo.id)} disabled={isAnyEditing}>
+            Delete🗑️
+          </button>
+        </>
+      )}
+    </li>
   )
 }
 
