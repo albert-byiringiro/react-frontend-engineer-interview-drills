@@ -109,16 +109,18 @@ The swap script copies `main.tsx`, `App.tsx`, and `index.css` (if present) from 
 ### Recommended workflow
 
 1. **Set a timer** — 30 min for P0 drills, 45 min for P1+.
-2. **Branch per drill** — `git checkout -b drill/pagination` before swapping.
+2. **Swap the drill** — `./swap-drill.sh pagination`. The script automatically creates and checks out a `drill/pagination` branch for you.
 3. **Read the drill README first** — clarify requirements in your head before writing code, just like in a real interview.
 4. **Build from scratch** — don't peek at solutions until the timer runs out.
 5. **Review & iterate** — after each attempt, note what tripped you up. Repeat the drill on a later day until you can nail it cold.
-6. **Commit your progress** — `git add . && git commit` before swapping to the next drill.
+6. **Commit your progress** — `git add src/ && git commit -m "drill: pagination done"` before swapping to the next drill.
 
-### Keep your work safe
+### Built-in safety
 
-- Always commit or branch before running `swap-drill.sh` again.
-- Check `git status` after swapping to confirm you haven't lost uncommitted changes.
+The swap script protects your work automatically:
+
+- **Uncommitted changes guard** — if you have unsaved work in `src/`, the script refuses to swap and tells you to commit first. Use `--force` to override if you intentionally want to discard.
+- **Auto-branching** — every swap creates or switches to a `drill/<name>` branch, so each drill's work is isolated. No more manual `git checkout -b`.
 - If a drill lacks `index.css`, the script skips it and leaves the existing stylesheet.
 
 ---

@@ -14,8 +14,9 @@ mapfile -t AVAILABLE_DRILLS < <(find . -maxdepth 1 -mindepth 1 -type d \
 # Function to show usage
 show_usage() {
     echo "Usage:"
-    echo "  $0 <drill-name>        Swap an existing drill into src/"
-    echo "  $0 new <drill-name>    Create a new drill from the template"
+    echo "  $0 <drill-name>          Swap an existing drill into src/"
+    echo "  $0 --force <drill-name>  Swap even if src/ has uncommitted changes"
+    echo "  $0 new <drill-name>      Create a new drill from the template"
     echo ""
     echo "Available drills:"
     for drill in "${AVAILABLE_DRILLS[@]}"; do
@@ -51,15 +52,25 @@ if [ "$1" == "new" ]; then
     exit 0
 fi
 
+# ─── Parse flags ──────────────────────────────────────────────────────
+FORCE=false
+ARGS=()
+for arg in "$@"; do
+    case "$arg" in
+        --force) FORCE=true ;;
+        *) ARGS+=("$arg") ;;
+    esac
+done
+
 # Check if drill name is provided
-if [ -z "$1" ]; then
+if [ ${#ARGS[@]} -eq 0 ]; then
     echo "Error: No drill name provided"
     echo ""
     show_usage
     exit 1
 fi
 
-DRILL_NAME="$1"
+DRILL_NAME="${ARGS[0]}"
 DRILL_PATH="$DRILLS_DIR/$DRILL_NAME"
 
 # Validate drill exists
@@ -68,6 +79,35 @@ if [ ! -d "$DRILL_PATH" ]; then
     echo ""
     show_usage
     exit 1
+fi
+
+# ─── Safety: check for uncommitted changes in src/ ────────────────────
+if [ "$FORCE" = false ]; then
+    DIRTY=$(git status --porcelain "$SRC_DIR" 2>/dev/null)
+    if [ -n "$DIRTY" ]; then
+        echo "⚠  You have uncommitted changes in src/."
+        echo ""
+        echo "Commit or stash your work before swapping:"
+        echo "  git add src/ && git commit -m \"drill: progress\""
+        echo ""
+        echo "Or use --force to discard and swap anyway:"
+        echo "  $0 --force $DRILL_NAME"
+        exit 1
+    fi
+fi
+
+# ─── Auto-branch: create or switch to drill/<name> ───────────────────
+BRANCH_NAME="drill/$DRILL_NAME"
+CURRENT_BRANCH=$(git branch --show-current 2>/dev/null)
+
+if [ "$CURRENT_BRANCH" != "$BRANCH_NAME" ]; then
+    if git show-ref --verify --quiet "refs/heads/$BRANCH_NAME" 2>/dev/null; then
+        git checkout "$BRANCH_NAME"
+        echo "✓ Switched to existing branch $BRANCH_NAME"
+    else
+        git checkout -b "$BRANCH_NAME"
+        echo "✓ Created and switched to branch $BRANCH_NAME"
+    fi
 fi
 
 # Ensure src directory exists
