@@ -56,8 +56,9 @@ function App() {
                   name="completed"
                   id="completed"
                   checked={todo.completed}
+                  onClick={() => toggleTodoComplete(todo.id)}
                 />
-                <span id="todo-text">{todo.text}</span>
+                <span id="todo-text" className={todo.completed ? "completed" : ""}>{todo.text}</span>
                 <button>Update</button>
                 <button onClick={() => deleteTodo(todo.id)}>Delete🗑️</button>
               </li>
