@@ -10,17 +10,13 @@ body {
     -apple-system,
     sans-serif;
   padding: 2rem;
-}
-
-.container {
+  height: 100vh;
   display: grid;
-  justify-items: center;
-  align-items: center;
-  padding: 2rem;
+  justify-content: center;
+  align-content: center;
 }
 
 .todo-list {
-  padding: 2rem;
   margin-top: 5px;
   border-radius: 10px;
 }
